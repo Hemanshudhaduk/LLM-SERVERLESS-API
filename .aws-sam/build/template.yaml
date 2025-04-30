@@ -1,0 +1,57 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'sagemaker-api
+
+  '
+Globals:
+  Function:
+    Timeout: 10
+    MemorySize: 256
+    Tracing: Active
+    LoggingConfig:
+      LogFormat: JSON
+  Api:
+    TracingEnabled: true
+Resources:
+  SageMakerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: SageMakerFunction
+      Handler: app.lambda_handler
+      Runtime: python3.12
+      Architectures:
+      - x86_64
+      Environment:
+        Variables:
+          SAGEMAKER_ENDPOINT: huggingface-pytorch-tgi-inference-2025-03-31-05-02-24-022
+      Policies:
+      - Statement:
+        - Effect: Allow
+          Action:
+          - sagemaker:InvokeEndpoint
+          Resource: '*'
+      Events:
+        PredictApi:
+          Type: Api
+          Properties:
+            Path: /predict
+            Method: post
+    Metadata:
+      SamResourceId: SageMakerFunction
+Outputs:
+  PredictApi:
+    Description: API Gateway endpoint URL for invoking the SageMaker function
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/predict/
+  SageMakerFunctionArn:
+    Description: Lambda Function ARN
+    Value:
+      Fn::GetAtt:
+      - SageMakerFunction
+      - Arn
+  SageMakerFunctionRole:
+    Description: IAM Role for SageMaker Lambda
+    Value:
+      Fn::GetAtt:
+      - SageMakerFunctionRole
+      - Arn
