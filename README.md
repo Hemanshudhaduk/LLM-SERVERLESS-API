@@ -76,12 +76,14 @@ curl -X POST \
 {
   "response": ["The Amazon rainforest is the world's largest tropical forest."]
 }
-IAM Permissions
+
+
+### IAM Permissions
 The Lambda function requires permissions to invoke the SageMaker endpoint. These permissions are defined in the SAM template.
 
-Environment Variables
+### Environment Variables
 SAGEMAKER_ENDPOINT: The name of the deployed SageMaker endpoint
-Monitoring and Maintenance
+### Monitoring and Maintenance
 Logging is configured in JSON format
 AWS X-Ray tracing is enabled for both Lambda and API Gateway
 CloudWatch Logs can be used to monitor the application
